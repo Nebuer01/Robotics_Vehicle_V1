@@ -4,6 +4,8 @@
     Author:     MIMAS\reube
 */
 
+#include <IRremote.hpp>
+
 #pragma region PinDefine
 
 #define RX 0;
@@ -16,7 +18,7 @@
 #define motor2 7;
 #define motor3 8;
 #define motor4 9;
-#define IR 10;
+#define IRPin 10;
 #define blueLED 11;
 #define ultraTrig 12;
 #define ultraEcho 13;
@@ -25,8 +27,15 @@
 
 void setup()
 {
+    Serial.begin(9600);
+    Serial.println("Begun Setup");
 
+    IRInitilise();
+}
 
+void IRInitilise()
+{
+    IrReceiver.begin(IRPin, ENABLE_LED_FEEDBACK);
 }
 
 void loop()
