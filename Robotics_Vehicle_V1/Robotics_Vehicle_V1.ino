@@ -43,6 +43,8 @@ Ultrasonic ultrasonic(ultraTrig, ultraEcho, 20000UL);
 
 int servoAngle = 90;
 
+bool hasIRRecv = false;
+
 #pragma endregion
 
 
@@ -132,6 +134,7 @@ void loop()
     }
     */
     IRReceive();
+    IRDecode();
 }
 
 
@@ -139,22 +142,78 @@ void IRReceive()
 {
     if (IrReceiver.decode())
     {
+        hasIRRecv = true;
         if (IrReceiver.decodedIRData.protocol == UNKNOWN) {
+            digitalWrite(redLED, HIGH);
+            digitalWrite(blueLED, LOW);
             Serial.println("||IR: Received noise or an unknown (or not yet enabled) protocol");
             IrReceiver.printIRResultRawFormatted(&Serial, true);
             IrReceiver.resume();
         }
         else {
+            digitalWrite(redLED, LOW);
+            digitalWrite(blueLED, HIGH);
             IrReceiver.resume();
             Serial.print("||IR: ");
             IrReceiver.printIRResultShort(&Serial);
             IrReceiver.printIRSendUsage(&Serial);
         }
-
+    }
+    else
+    {
+        hasIRRecv = false;
     }
 }
 
 void IRDecode()
 {
-    
+ 
+#pragma region ButtonCommands
+
+
+    int but1 = 0x45;
+    int but2 = 0x46;
+    int but3 = 0x47;
+    int but4 = 0x44;
+    int but5 = 0x40;
+    int but6 = 0x43;
+    int but7 = 0x7;
+    int but8 = 0x15;
+    int but9 = 0x9;
+    int but0 = 0x19;
+
+    int butUp = 0x18;
+    int butLeft = 0x8;
+    int butRight = 0x5A;
+    int butDown = 0x52;
+    int butOK = 0x1C;
+    int butStar = 0x16;
+    int butHash = 0xD;
+
+#pragma endregion
+
+
+if (!hasIRRecv) { return; }
+
+    if (IrReceiver.decodedIRData.command == but1)
+    {
+        Serial.println("IR BUTTON 1 RECV");
+        //IrReceiver.decodedIRData;
+    }
+
+    switch (IrReceiver.decodedIRData.command)
+    {
+    default:
+        digitalWrite(redLED, HIGH);
+        digitalWrite(blueLED, HIGH);
+        break;
+    but1:
+        Serial.println("IR BUTTON 1 RECV");
+        break;
+    but:
+        Serial.println("IR BUTTON 2 RECV");
+        break;
+    but3:
+        break;
+    }
 }
