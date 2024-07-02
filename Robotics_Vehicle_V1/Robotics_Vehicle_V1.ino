@@ -51,7 +51,7 @@ bool hasIRRecv = false;
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(11520);
     Serial.println("Begun Setup");
 
     TestLEDSetup();
@@ -186,7 +186,7 @@ void IRDecode()
     int butLeft = 0x8;
     int butRight = 0x5A;
     int butDown = 0x52;
-    int butOK = 0x1C;
+    int butOk = 0x1C;
     int butStar = 0x16;
     int butHash = 0xD;
 
@@ -195,12 +195,34 @@ void IRDecode()
 
 if (!hasIRRecv) { return; }
 
-    if (IrReceiver.decodedIRData.command == but1)
-    {
-        Serial.println("IR BUTTON 1 RECV");
-        //IrReceiver.decodedIRData;
-    }
+int IrData = IrReceiver.decodedIRData.command;
 
+    if (IrData == butUp)
+    {
+        Serial.println("IR: BUTTON Up RECV");
+    }
+    else if(IrData == butDown)
+    {
+        Serial.println("IR: BUTTON Down RECV");
+    }
+    else if (IrData == butLeft)
+    {
+        Serial.println("IR: BUTTON Left RECV");
+    }
+    else if (IrData == butRight)
+    {
+        Serial.println("IR: BUTTON Right RECV");
+    }
+    else if (IrData == butOk)
+    {
+        Serial.println("IR: BUTTON OK RECV");
+    }
+    
+    
+    
+    
+    
+    /*
     switch (IrReceiver.decodedIRData.command)
     {
     default:
@@ -215,5 +237,14 @@ if (!hasIRRecv) { return; }
         break;
     but3:
         break;
-    }
+    }*/
+
+
 }
+
+
+/*    if (IrReceiver.decodedIRData.command == but1)
+    {
+        Serial.println("IR BUTTON 1 RECV");
+        //IrReceiver.decodedIRData;
+    }*/
