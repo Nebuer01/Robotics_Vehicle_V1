@@ -45,6 +45,11 @@ int servoAngle = 90;
 
 bool hasIRRecv = false;
 
+bool isFoward = false;
+bool isBackward = false;
+bool isLeft = false;
+bool isRight = false;
+
 #pragma endregion
 
 
@@ -135,6 +140,7 @@ void loop()
     */
     IRReceive();
     IRDecode();
+    MotorMaster();
 }
 
 
@@ -200,10 +206,12 @@ int IrData = IrReceiver.decodedIRData.command;
     if (IrData == butUp)
     {
         Serial.println("IR: BUTTON Up RECV");
+        isFoward = true;
     }
     else if(IrData == butDown)
     {
         Serial.println("IR: BUTTON Down RECV");
+        isFoward = false;
     }
     else if (IrData == butLeft)
     {
