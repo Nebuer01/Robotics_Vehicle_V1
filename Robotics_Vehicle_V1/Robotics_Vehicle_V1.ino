@@ -216,15 +216,76 @@ int IrData = IrReceiver.decodedIRData.command;
     else if (IrData == butLeft)
     {
         Serial.println("IR: BUTTON Left RECV");
+        isLeft = true;
     }
     else if (IrData == butRight)
     {
         Serial.println("IR: BUTTON Right RECV");
+        isRight = true;
     }
     else if (IrData == butOk)
     {
         Serial.println("IR: BUTTON OK RECV");
     }
+    else if (IrData == but1)
+    {
+        Serial.println("IR: BUTTON 1 RECV");
+    }
+    else if (IrData == but2)
+    {
+        Serial.println("IR: BUTTON 2 RECV");
+    }
+    else if (IrData == but3)
+    {
+        Serial.println("IR: BUTTON 3 RECV");
+    }
+    else if (IrData == but4)
+    {
+        Serial.println("IR: BUTTON 4 RECV");
+    }
+    else if (IrData == but5)
+    {
+        Serial.println("IR: BUTTON 5 RECV");
+    }
+    else if (IrData == but6)
+    {
+        Serial.println("IR: BUTTON 6 RECV");
+    }
+    else if (IrData == but6)
+    {
+        Serial.println("IR: BUTTON 6 RECV");
+    }
+	else if (IrData == but7)
+	{
+		Serial.println("IR: BUTTON 7 RECV");
+	}
+	else if (IrData == but8)
+	{
+		Serial.println("IR: BUTTON 8 RECV");
+	}
+	else if (IrData == but9)
+	{
+		Serial.println("IR: BUTTON 9 RECV");
+	}
+	else if (IrData == but0)
+	{
+		Serial.println("IR: BUTTON 0 RECV");
+	}
+	else if (IrData == butStar)
+	{
+		Serial.println("IR: BUTTON * RECV");
+	}
+	else if (IrData == butHash)
+	{
+		Serial.println("IR: BUTTON # RECV");
+	}
+	else
+	{
+		Serial.println("IR: BUTTON UNKNOWN RECV");
+        isLeft = false;
+        isRight = false;
+	}
+
     
     
     
@@ -248,6 +309,40 @@ int IrData = IrReceiver.decodedIRData.command;
     }*/
 
 
+}
+
+void MotorMaster()
+{
+    Serial.println(isFoward);
+    if (isFoward)
+    {
+        Serial.println("FOWARAD ACTIONED");
+        MotorControl(1, 0, 1, 0);
+    }
+    if (isBackward)
+    {
+        MotorControl(0, 1, 0, 1);
+    }
+    if (isLeft)
+    {
+        MotorControl(1, 0, 0, 0);
+    }
+    if (isRight)
+    {
+        MotorControl(0, 0, 1, 0);
+    }
+    else
+    {
+        MotorControl(0, 0, 0, 0);
+    }
+}
+
+void MotorControl(int motor1, int motor2, int motor3, int motor4)
+{
+	digitalWrite(motor1, motor1);
+	digitalWrite(motor2, motor2);
+	digitalWrite(motor3, motor3);
+	digitalWrite(motor4, motor4);
 }
 
 
