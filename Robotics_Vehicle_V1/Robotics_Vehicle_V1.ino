@@ -207,25 +207,47 @@ int IrData = IrReceiver.decodedIRData.command;
     {
         Serial.println("IR: BUTTON Up RECV");
         isFoward = true;
+        isLeft = false;
+        isRight = false;
+        isBackward = false;
+
+
     }
     else if(IrData == butDown)
     {
         Serial.println("IR: BUTTON Down RECV");
         isFoward = false;
+        isLeft = false;
+        isRight = false;
+        isBackward = false;
+
+
     }
     else if (IrData == butLeft)
     {
         Serial.println("IR: BUTTON Left RECV");
         isLeft = true;
+        isFoward = false;
+        isRight = false;
+
     }
     else if (IrData == butRight)
     {
         Serial.println("IR: BUTTON Right RECV");
         isRight = true;
+        isFoward = false;
+        isLeft = false;
+        isBackward = false;
+
+
     }
     else if (IrData == butOk)
     {
         Serial.println("IR: BUTTON OK RECV");
+        isBackward = true;
+        isRight = false;
+        isFoward = false;
+        isLeft = false;
     }
     else if (IrData == but1)
     {
@@ -317,32 +339,39 @@ void MotorMaster()
     if (isFoward)
     {
         Serial.println("FOWARAD ACTIONED");
-        MotorControl(1, 0, 1, 0);
+        MotorControl(HIGH, LOW, HIGH, LOW);
+
     }
-    if (isBackward)
+    else if (isBackward)
     {
         MotorControl(0, 1, 0, 1);
+
     }
-    if (isLeft)
+    else if (isLeft)
     {
         MotorControl(1, 0, 0, 0);
     }
-    if (isRight)
+    else if (isRight)
     {
         MotorControl(0, 0, 1, 0);
     }
     else
     {
         MotorControl(0, 0, 0, 0);
+        //digitalWrite(motor1, LOW);
+        //digitalWrite(motor2, LOW);
+        //digitalWrite(motor3, LOW);
+        //digitalWrite(motor4, LOW);
     }
 }
 
-void MotorControl(int motor1, int motor2, int motor3, int motor4)
+void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 {
-	digitalWrite(motor1, motor1);
-	digitalWrite(motor2, motor2);
-	digitalWrite(motor3, motor3);
-	digitalWrite(motor4, motor4);
+    Serial.println(motor1Int + motor2Int + motor3Int + motor4Int);
+	digitalWrite(motor1, motor2Int);
+	digitalWrite(motor2, motor1Int);
+	digitalWrite(motor3, motor3Int);
+	digitalWrite(motor4, motor4Int);
 }
 
 
