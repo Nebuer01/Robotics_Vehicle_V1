@@ -50,6 +50,11 @@ bool isBackward = false;
 bool isLeft = false;
 bool isRight = false;
 
+int currentAngle = myServo.read();
+int nextAngle = 180;
+int cycleCount = 0;
+int nextAngleMulti = -1;
+
 #pragma endregion
 
 
@@ -118,29 +123,11 @@ void GenericPinSetup(int pin, int type)
 
 void loop()
 {
-    /*
-    Serial.print("Servo Angle: ");
-    Serial.print(servoAngle);
-    Serial.print(" | Ultrasonic: ");
-    Serial.print(ultrasonic.read());
-    Serial.println(" |");
 
-    if (isDebuging)
-    {
-        digitalWrite(motor1, HIGH);
-        digitalWrite(motor2, LOW);
-        digitalWrite(motor3, HIGH);
-        digitalWrite(motor4, LOW);
-        delay(1500);
-        digitalWrite(motor2, HIGH);
-        digitalWrite(motor1, LOW);
-        digitalWrite(motor4, HIGH);
-        digitalWrite(motor3, LOW);
-    }
-    */
     IRReceive();
     IRDecode();
     MotorMaster();
+    //ServoMove();
 }
 
 
@@ -335,7 +322,6 @@ int IrData = IrReceiver.decodedIRData.command;
 
 void MotorMaster()
 {
-    Serial.println(isFoward);
     if (isFoward)
     {
         Serial.println("FOWARAD ACTIONED");
@@ -367,7 +353,7 @@ void MotorMaster()
 
 void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 {
-    Serial.println(motor1Int + motor2Int + motor3Int + motor4Int);
+    //Serial.println(motor1Int + motor2Int + motor3Int + motor4Int);
 	digitalWrite(motor1, motor2Int);
 	digitalWrite(motor2, motor1Int);
 	digitalWrite(motor3, motor3Int);
@@ -375,8 +361,29 @@ void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 }
 
 
-/*    if (IrReceiver.decodedIRData.command == but1)
+void ServoMove()
+{
+    Serial.print("Previous cycle count: ");
+    Serial.println(cycleCount);
+
+    if (cycleCount < 5)
+	{
+		cycleCount++;
+        return;
+	}
+	else
+	{
+		cycleCount = 0;
+	}
+
+    myServo.write(nextAngle);
+    nextAngle = (nextAngle + 5) * nextAngleMulti;
+    if (nextAngle <= -60 && nextAngleMulti == -1)
     {
-        Serial.println("IR BUTTON 1 RECV");
-        //IrReceiver.decodedIRData;
-    }*/
+        nextAngleMulti = 1;
+    }
+	else if (nextAngle >= 60 && nextAngleMulti == 1)
+	{
+		nextAngleMulti = -1;
+	}
+}
