@@ -127,7 +127,7 @@ void loop()
     IRReceive();
     IRDecode();
     MotorMaster();
-    //ServoMove();
+    ServoMove();
 }
 
 
@@ -363,6 +363,26 @@ void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 
 void ServoMove()
 {
+    delay(500);
+    myServo.write(nextAngle);
+    Serial.println(nextAngle);
+    nextAngle = (nextAngle + 5) * nextAngleMulti;
+    if (nextAngle > 170 || nextAngle < 10)
+	{
+        if (nextAngleMulti == 1)
+        {
+            nextAngleMulti = -1;
+        }
+        else if (nextAngleMulti == -1)
+		{
+			nextAngleMulti = 1;
+		}
+	}
+    
+}
+
+
+/*
     Serial.print("Previous cycle count: ");
     Serial.println(cycleCount);
 
@@ -385,5 +405,4 @@ void ServoMove()
 	else if (nextAngle >= 60 && nextAngleMulti == 1)
 	{
 		nextAngleMulti = -1;
-	}
-}
+	}*/
