@@ -53,7 +53,7 @@ bool isRight = false;
 int currentAngle = myServo.read();
 int nextAngle = 180;
 int cycleCount = 0;
-int nextAngleMulti = -1;
+bool isNextAngleNeg = false;
 
 #pragma endregion
 
@@ -363,21 +363,33 @@ void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 
 void ServoMove()
 {
-    delay(500);
+    delay(20);
     myServo.write(nextAngle);
     Serial.println(nextAngle);
-    nextAngle = (nextAngle + 5) * nextAngleMulti;
-    if (nextAngle > 170 || nextAngle < 10)
-	{
-        if (nextAngleMulti == 1)
-        {
-            nextAngleMulti = -1;
-        }
-        else if (nextAngleMulti == -1)
+
+    if (!isNextAngleNeg)
+    {
+        if (nextAngle >= 150)
 		{
-			nextAngleMulti = 1;
+			isNextAngleNeg = true;
 		}
+        else
+        {
+            nextAngle = nextAngle + 3;
+        }
 	}
+    else
+    {
+        if (nextAngle <= 30)
+        {
+            isNextAngleNeg = false;
+        }
+        else
+        {
+            nextAngle = nextAngle - 3;
+        }
+
+    }
     
 }
 
