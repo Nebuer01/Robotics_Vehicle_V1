@@ -10,7 +10,7 @@
 #include <Servo.h>
 #include <IRremote.hpp>
 
-bool isDebuging = true;
+bool isAuto = true;
 
 #pragma region PinDefine
 
@@ -112,22 +112,64 @@ void MotorInitilise()
 }
 
 
-void GenericPinSetup(int pin, int type)
-{
-    digitalWrite(pin, type);
-    if (type == 0)
-    {
-        digitalWrite(pin, LOW);
-    }
-}
+
 
 void loop()
 {
+    if (isAuto)
+	{
+		AutoControlLoop();
+        //digitalWrite(motor3, 1);
+        //ServoMove();
+	}
+    else 
+    {
+        IRReceive();
+        IRDecode();
+        MotorMaster();
+        ServoMove();
+    }
 
-    IRReceive();
-    IRDecode();
+
+}
+
+void AutoControlLoop()
+{
+    int delay1 = 1000;
+    int delay2 = 800;
+
+    isFoward = true;
     MotorMaster();
-    ServoMove();
+    delay(delay1);
+    isFoward = false;
+    isLeft = true;
+    MotorMaster();
+    delay(delay2);
+    isFoward = true;
+    isLeft = false;
+    MotorMaster();
+    delay(delay1);
+    isFoward = false;
+    isLeft = true;
+    MotorMaster();
+    delay(delay2);
+    isFoward = true;
+    isLeft = false;
+    MotorMaster();
+    delay(delay1);
+    isFoward = false;
+    isLeft = true;
+    MotorMaster();
+    delay(delay2);
+    isFoward = true;
+    isLeft = false;
+    MotorMaster();
+    delay(delay1);
+    isFoward = false;
+    isLeft = true;
+    MotorMaster();
+    delay(delay2);
+
 }
 
 
@@ -288,34 +330,12 @@ int IrData = IrReceiver.decodedIRData.command;
 	{
 		Serial.println("IR: BUTTON # RECV");
 	}
-	else
-	{
-		Serial.println("IR: BUTTON UNKNOWN RECV");
+    else
+    {
+        Serial.println("IR: BUTTON UNKNOWN RECV");
         isLeft = false;
         isRight = false;
-	}
-
-    
-    
-    
-    
-    
-    /*
-    switch (IrReceiver.decodedIRData.command)
-    {
-    default:
-        digitalWrite(redLED, HIGH);
-        digitalWrite(blueLED, HIGH);
-        break;
-    but1:
-        Serial.println("IR BUTTON 1 RECV");
-        break;
-    but:
-        Serial.println("IR BUTTON 2 RECV");
-        break;
-    but3:
-        break;
-    }*/
+    }
 
 
 }
@@ -325,37 +345,46 @@ void MotorMaster()
     if (isFoward)
     {
         Serial.println("FOWARAD ACTIONED");
-        MotorControl(HIGH, LOW, HIGH, LOW);
-
+        //MotorControl(1, 0, 1, 0);
+        digitalWrite(motor1, 1);
+        digitalWrite(motor2, 0);
+        digitalWrite(motor3, 1);
+        digitalWrite(motor4, 0);
     }
     else if (isBackward)
     {
         MotorControl(0, 1, 0, 1);
 
+
     }
     else if (isLeft)
     {
-        MotorControl(1, 0, 0, 0);
+        //MotorControl(1, 0, 0, 0);
+        digitalWrite(motor1, 1);
+        digitalWrite(motor2, 0);
+        digitalWrite(motor3, 0);
+        digitalWrite(motor4, 0);
     }
     else if (isRight)
     {
         MotorControl(0, 0, 1, 0);
     }
-    else
+    /*else
     {
         MotorControl(0, 0, 0, 0);
         //digitalWrite(motor1, LOW);
         //digitalWrite(motor2, LOW);
         //digitalWrite(motor3, LOW);
         //digitalWrite(motor4, LOW);
-    }
+    }*/
 }
 
 void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 {
+
     //Serial.println(motor1Int + motor2Int + motor3Int + motor4Int);
-	digitalWrite(motor1, motor2Int);
-	digitalWrite(motor2, motor1Int);
+	digitalWrite(motor1, motor1Int);
+	digitalWrite(motor2, motor2Int);
 	digitalWrite(motor3, motor3Int);
 	digitalWrite(motor4, motor4Int);
 }
@@ -392,29 +421,3 @@ void ServoMove()
     }
     
 }
-
-
-/*
-    Serial.print("Previous cycle count: ");
-    Serial.println(cycleCount);
-
-    if (cycleCount < 5)
-	{
-		cycleCount++;
-        return;
-	}
-	else
-	{
-		cycleCount = 0;
-	}
-
-    myServo.write(nextAngle);
-    nextAngle = (nextAngle + 5) * nextAngleMulti;
-    if (nextAngle <= -60 && nextAngleMulti == -1)
-    {
-        nextAngleMulti = 1;
-    }
-	else if (nextAngle >= 60 && nextAngleMulti == 1)
-	{
-		nextAngleMulti = -1;
-	}*/
