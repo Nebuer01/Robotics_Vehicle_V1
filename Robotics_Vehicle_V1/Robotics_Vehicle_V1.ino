@@ -3,25 +3,26 @@
     Created:	24/06/2024 9:18:57 am
     Author:     MIMAS\reube
 */
-
 #define DECODE_NEC  
+//#define INCLUDE_GAMEPAD_MODULE
+
+#include <Dabble.h>
+//#include <SensorModule.h>
 
 #include <Ultrasonic.h>
 #include <Servo.h>
-#include <IRremote.hpp>
+//#include <IRremote.hpp>
 
-bool isAuto = true;
+bool isAuto = false;
 
 #pragma region PinDefine
 
-#define RX 0;
-#define TX 1;
 //#define null 2;
-int servoPin = 3;
-int motor1 = 8;
-int redLED = 2;
+int servoPin = 6;
+int motor1 = 9;
+int redLED = 7;
 //#define null 6;
-int motor2 = 9;
+int motor2 = 8;
 int motor3 = 10;
 int motor4 = 11;
 int IRPin = 5;
@@ -65,8 +66,8 @@ void setup()
     Serial.println("Begun Setup");
 
     TestLEDSetup();
-    //Btooth Setup
-    IRInitilise(); //IR Setup
+    BluetoothInitilise(); //Bluetooth Setup
+    //IRInitilise(); //IR Setup
     ServoInitilise();// Servo Setup
     MotorInitilise();
 
@@ -84,6 +85,11 @@ void TestLEDSetup()
     Serial.println("LED Setup Complete");
 }
 
+void BluetoothInitilise()
+{
+   Dabble.begin(9600);
+}
+/*
 void IRInitilise()
 {
     IrReceiver.begin(IRPin, ENABLE_LED_FEEDBACK);
@@ -91,7 +97,7 @@ void IRInitilise()
     Serial.println(IRPin);
     Serial.println("IR Setup Complete");
 }
-
+*/
 void ServoInitilise()
 {
     myServo.attach(servoPin);
@@ -124,10 +130,11 @@ void loop()
 	}
     else 
     {
-        IRReceive();
-        IRDecode();
+        //IRReceive();
+        //IRDecode();
+        BluetoothLoop();
         MotorMaster();
-        ServoMove();
+        //ServoMove();
     }
 
 
@@ -172,7 +179,7 @@ void AutoControlLoop()
 
 }
 
-
+/*
 void IRReceive()
 {
     if (IrReceiver.decode())
@@ -339,6 +346,61 @@ int IrData = IrReceiver.decodedIRData.command;
 
 
 }
+*/
+
+void BluetoothLoop()
+{
+    Dabble.processInput();
+
+    if (GamePad.isCrossPressed())
+    {
+        Serial.println("CROSS");
+        isFoward = false;
+        isLeft = false;
+        isRight = false;
+        isBackward = false;
+    }
+    else if (GamePad.isUpPressed())
+	{
+		Serial.println("UP");
+		isFoward = true;
+		isLeft = false;
+		isRight = false;
+		isBackward = false;
+	}
+    else if (GamePad.isLeftPressed())
+    {
+        Serial.println("LEFT");
+        isFoward = false;
+        isLeft = true;
+        isRight = false;
+        isBackward = false;
+    }
+    else if (GamePad.isRightPressed())
+	{
+		Serial.println("RIGHT");
+		isFoward = false;
+		isLeft = false;
+		isRight = true;
+		isBackward = false;
+	}
+	else if (GamePad.isDownPressed())
+	{
+		Serial.println("DOWN");
+		isFoward = false;
+		isLeft = false;
+		isRight = false;
+		isBackward = true;
+	}
+	else
+	{
+		isFoward = false;
+		isLeft = false;
+		isRight = false;
+		isBackward = false;
+	}
+}
+
 
 void MotorMaster()
 {
@@ -360,23 +422,26 @@ void MotorMaster()
     else if (isLeft)
     {
         //MotorControl(1, 0, 0, 0);
+        digitalWrite(motor1, 0);
+        digitalWrite(motor2, 0);
+        digitalWrite(motor3, 1);
+        digitalWrite(motor4, 0);
+    }
+    else if (isRight)
+    {
         digitalWrite(motor1, 1);
         digitalWrite(motor2, 0);
         digitalWrite(motor3, 0);
         digitalWrite(motor4, 0);
     }
-    else if (isRight)
+    else
     {
-        MotorControl(0, 0, 1, 0);
+        //MotorControl(0, 0, 0, 0);
+        digitalWrite(motor1, LOW);
+        digitalWrite(motor2, LOW);
+        digitalWrite(motor3, LOW);
+        digitalWrite(motor4, LOW);
     }
-    /*else
-    {
-        MotorControl(0, 0, 0, 0);
-        //digitalWrite(motor1, LOW);
-        //digitalWrite(motor2, LOW);
-        //digitalWrite(motor3, LOW);
-        //digitalWrite(motor4, LOW);
-    }*/
 }
 
 void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
