@@ -4,24 +4,21 @@
     Author:     MIMAS\reube
 */
 #define DECODE_NEC  
-//#define INCLUDE_GAMEPAD_MODULE
 
 #include <Dabble.h>
-//#include <SensorModule.h>
 
 #include <Ultrasonic.h>
 #include <Servo.h>
 //#include <IRremote.hpp>
 
 bool isAuto = false;
+bool isBluetooth = true;
 
 #pragma region PinDefine
 
-//#define null 2;
 int servoPin = 6;
 int motor1 = 9;
 int redLED = 7;
-//#define null 6;
 int motor2 = 8;
 int motor3 = 10;
 int motor4 = 11;
@@ -32,7 +29,7 @@ int ultraEcho = 13;
 
 #pragma endregion
 
-#pragma region OtherNonFunctionSetup
+#pragma region AliasVariables
 
 Servo myServo;
 int motorPins[4] = { motor1, motor2, motor3, motor4 };
@@ -65,7 +62,7 @@ void setup()
     Serial.begin(11520);
     Serial.println("Begun Setup");
 
-    TestLEDSetup();
+    TestLEDSetup(); //Test LED Setup
     BluetoothInitilise(); //Bluetooth Setup
     //IRInitilise(); //IR Setup
     ServoInitilise();// Servo Setup
@@ -88,6 +85,7 @@ void TestLEDSetup()
 void BluetoothInitilise()
 {
    Dabble.begin(9600);
+   Serial.println("Bluetooth Setup Complete");
 }
 /*
 void IRInitilise()
@@ -119,25 +117,26 @@ void MotorInitilise()
 
 
 
-
 void loop()
 {
     if (isAuto)
 	{
 		AutoControlLoop();
-        //digitalWrite(motor3, 1);
-        //ServoMove();
+        ServoMove();
 	}
     else 
     {
-        //IRReceive();
-        //IRDecode();
-        BluetoothLoop();
+        if (isBluetooth)
+        {
+			BluetoothLoop();
+		}
+        else
+        {
+            //IRReceive();
+            //IRDecode();
+        }
         MotorMaster();
-        //ServoMove();
     }
-
-
 }
 
 void AutoControlLoop()
@@ -177,6 +176,41 @@ void AutoControlLoop()
     MotorMaster();
     delay(delay2);
 
+    if(isBluetooth)
+	{
+		isAuto = false;
+	}
+}
+
+
+void ServoMove()
+{
+    delay(20);
+    myServo.write(nextAngle);
+    Serial.println(nextAngle);
+
+    if (!isNextAngleNeg)
+    {
+        if (nextAngle >= 150)
+        {
+            isNextAngleNeg = true;
+        }
+        else
+        {
+            nextAngle = nextAngle + 3;
+        }
+    }
+    else
+    {
+        if (nextAngle <= 30)
+        {
+            isNextAngleNeg = false;
+        }
+        else
+        {
+            nextAngle = nextAngle - 3;
+        }
+    }
 }
 
 /*
@@ -343,8 +377,6 @@ int IrData = IrReceiver.decodedIRData.command;
         isLeft = false;
         isRight = false;
     }
-
-
 }
 */
 
@@ -392,6 +424,15 @@ void BluetoothLoop()
 		isRight = false;
 		isBackward = true;
 	}
+    else if (GamePad.isStartPressed())
+    {
+        Serial.println("START");
+        isFoward = false;
+        isLeft = false;
+        isRight = false;
+        isBackward = false;
+        isAuto = !isAuto;
+    }
 	else
 	{
 		isFoward = false;
@@ -407,82 +448,31 @@ void MotorMaster()
     if (isFoward)
     {
         Serial.println("FOWARAD ACTIONED");
-        //MotorControl(1, 0, 1, 0);
-        digitalWrite(motor1, 1);
-        digitalWrite(motor2, 0);
-        digitalWrite(motor3, 1);
-        digitalWrite(motor4, 0);
+        MotorControl(1, 0, 1, 0);
     }
     else if (isBackward)
     {
         MotorControl(0, 1, 0, 1);
-
-
     }
     else if (isLeft)
     {
-        //MotorControl(1, 0, 0, 0);
-        digitalWrite(motor1, 0);
-        digitalWrite(motor2, 0);
-        digitalWrite(motor3, 1);
-        digitalWrite(motor4, 0);
+        MotorControl(0, 0, 1, 0);
     }
     else if (isRight)
     {
-        digitalWrite(motor1, 1);
-        digitalWrite(motor2, 0);
-        digitalWrite(motor3, 0);
-        digitalWrite(motor4, 0);
+        MotorControl(1, 0, 0, 0);
     }
     else
     {
-        //MotorControl(0, 0, 0, 0);
-        digitalWrite(motor1, LOW);
-        digitalWrite(motor2, LOW);
-        digitalWrite(motor3, LOW);
-        digitalWrite(motor4, LOW);
+        MotorControl(0, 0, 0, 0);
     }
 }
 
 void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 {
-
-    //Serial.println(motor1Int + motor2Int + motor3Int + motor4Int);
 	digitalWrite(motor1, motor1Int);
 	digitalWrite(motor2, motor2Int);
 	digitalWrite(motor3, motor3Int);
 	digitalWrite(motor4, motor4Int);
 }
 
-
-void ServoMove()
-{
-    delay(20);
-    myServo.write(nextAngle);
-    Serial.println(nextAngle);
-
-    if (!isNextAngleNeg)
-    {
-        if (nextAngle >= 150)
-		{
-			isNextAngleNeg = true;
-		}
-        else
-        {
-            nextAngle = nextAngle + 3;
-        }
-	}
-    else
-    {
-        if (nextAngle <= 30)
-        {
-            isNextAngleNeg = false;
-        }
-        else
-        {
-            nextAngle = nextAngle - 3;
-        }
-
-    }
-    
-}
