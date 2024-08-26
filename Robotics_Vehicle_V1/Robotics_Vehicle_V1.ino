@@ -3,19 +3,20 @@
     Created:	24/06/2024 9:18:57 am
     Author:     MIMAS\reube
 */
-#define DECODE_NEC  
+#define DECODE_NEC  //IR protocal defintion
 
+//Libraries
 #include <Dabble.h>
-
 #include <Ultrasonic.h>
 #include <Servo.h>
-//#include <IRremote.hpp>
+//#include <IRremote.hpp> //IR througout the project may be commented out due to a conflict with the Dabble library. Only one method of communcation can be active at once
 
-bool isAuto = false;
-bool isBluetooth = true;
+bool isAuto = false; //Toggle for auto mode
+bool isBluetooth = true; //Toggle for bluetooth mode vs IR mode
 
 #pragma region PinDefine
 
+// Variables for the board digital pins so I can change the pin number here and it changes throughout the project
 int servoPin = 6;
 int motor1 = 9;
 int redLED = 7;
