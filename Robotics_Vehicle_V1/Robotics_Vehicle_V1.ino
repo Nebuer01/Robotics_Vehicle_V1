@@ -40,6 +40,8 @@ Ultrasonic ultrasonic(ultraTrig, ultraEcho, 20000UL);
 
 #pragma region RuntimeVariables
 
+//Variables changed during runtime
+
 int servoAngle = 90;
 
 bool hasIRRecv = false;
@@ -78,6 +80,7 @@ void TestLEDSetup()
 {
     pinMode(redLED, OUTPUT);
     pinMode(blueLED, OUTPUT);
+    pinMode(redLED, LOW);
     digitalWrite(blueLED, HIGH);
 
     Serial.println("LED Setup Complete");
@@ -85,13 +88,13 @@ void TestLEDSetup()
 
 void BluetoothInitilise()
 {
-   Dabble.begin(9600);
+   Dabble.begin(9600); //Begin bluetooth and set bluetooth baud rate
    Serial.println("Bluetooth Setup Complete");
 }
 /*
 void IRInitilise()
 {
-    IrReceiver.begin(IRPin, ENABLE_LED_FEEDBACK);
+    IrReceiver.begin(IRPin, ENABLE_LED_FEEDBACK); //Begin IR communication, set pin and enable the onboard LED
     Serial.print("Receiving IR at pin ");
     Serial.println(IRPin);
     Serial.println("IR Setup Complete");
@@ -214,6 +217,7 @@ void ServoMove()
     }
 }
 
+// IR
 /*
 void IRReceive()
 {
