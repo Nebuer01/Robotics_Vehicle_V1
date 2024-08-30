@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 ## Robotics_Vehicle_V1
 # 2024 11ROB Vehicle code version 1
+=======
+# Robotics_Vehicle_V1
+## 2024 11ROB Vehicle code version 1
+>>>>>>> f5e82e2 (Update README.md)
 
 This program is for a simple robot vehicle that can be controlled via bluetooth or IR remote with an option for a full auto mode. 
 
