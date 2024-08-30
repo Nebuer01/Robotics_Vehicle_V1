@@ -2,6 +2,10 @@
     Name:       Robotics_Vehicle_V1.ino
     Created:	24/06/2024 9:18:57 am
     Author:     MIMAS\reube
+    ReadMe:     ./README.md
+    Description: This code is for a simple robot vehicle that can be controlled via bluetooth or IR remote with an option for a full auto mode
+    Project wide development notes:
+        The pragma regions are simply for organisation and do not affect the code in any way, it makes it easier to look at and debug, splitting the code up into differnt sections
 */
 #define DECODE_NEC  //IR protocal defintion
 
@@ -11,7 +15,7 @@
 #include <Servo.h>
 //#include <IRremote.hpp> //IR througout the project may be commented out due to a conflict with the Dabble library. Only one method of communcation can be active at once
 
-bool isAuto = false; //Toggle for auto mode
+bool isAutoFull = false; //Toggle for auto mode
 bool isBluetooth = true; //Toggle for bluetooth mode vs IR mode
 
 #pragma region PinDefine
@@ -56,6 +60,8 @@ int nextAngle = 180;
 int cycleCount = 0;
 bool isNextAngleNeg = false;
 
+bool isAuto = false;
+
 #pragma endregion
 
 
@@ -65,11 +71,11 @@ void setup()
     Serial.begin(11520);
     Serial.println("Begun Setup");
 
-    TestLEDSetup(); //Test LED Setup
-    BluetoothInitilise(); //Bluetooth Setup
-    //IRInitilise(); //IR Setup
+    TestLEDSetup(); // Test LED Setup
+    BluetoothInitilise(); // Bluetooth Setup
+    //IRInitilise(); // IR Setup
     ServoInitilise();// Servo Setup
-    MotorInitilise();
+    MotorInitilise(); // Motor Setup
 
     Serial.println("Setup Complete");
     Serial.println("--------------");
@@ -110,6 +116,7 @@ void ServoInitilise()
 
 void MotorInitilise()
 {
+    // for loop to cycle through the motor pins and set them to output and low
     for (int i = 0; i <= 4; i++)
     {
         pinMode(motorPins[i], OUTPUT);
@@ -123,14 +130,14 @@ void MotorInitilise()
 
 void loop()
 {
-    if (isAuto)
+    if (isAutoFull || isAuto) //if I have enabled auto mode or auto has been triggered by bluetooth, run the auto control loop rather than the manual control loop
 	{
 		AutoControlLoop();
         ServoMove();
 	}
     else 
     {
-        if (isBluetooth)
+        if (isBluetooth) // if bluetooth is enabled, run the bluetooth loop else run the IR loop
         {
 			BluetoothLoop();
 		}
@@ -145,6 +152,7 @@ void loop()
 
 void AutoControlLoop()
 {
+    // A sequence of motor pin changes and delays to create a rough square pattern
     int delay1 = 1000;
     int delay2 = 800;
 
@@ -180,22 +188,20 @@ void AutoControlLoop()
     MotorMaster();
     delay(delay2);
 
-    if(isBluetooth)
-	{
-		isAuto = false;
-	}
+	isAuto = false;
 }
 
 
 void ServoMove()
 {
+
     delay(20);
     myServo.write(nextAngle);
     Serial.println(nextAngle);
 
-    if (!isNextAngleNeg)
+    if (!isNextAngleNeg) //if the next angle is not negative, increase the angle by 3 degrees but if it is negative, decrease the angle by 3 degrees
     {
-        if (nextAngle >= 150)
+        if (nextAngle >= 150) // if the servo has reached the maximum desired radius, switch the direction to start it moving in the opposite direction.
         {
             isNextAngleNeg = true;
         }
@@ -221,6 +227,11 @@ void ServoMove()
 /*
 void IRReceive()
 {
+// If the IR receiver has decoded a signal, print the signal to the serial monitor, set the hasIRRecv variable to true and resume the IR receiver. 
+// If the signal is noisy then print an error and light up the error LED.
+// If no signal is received set the hasIRRecv variable to false. This ensures that the robot will only move if currently receiving a signal. 
+// Otherwise the IR decoded data will remian as the most recent command and the motor control will interpretthat as a continued press.
+
     if (IrReceiver.decode())
     {
         hasIRRecv = true;
@@ -251,6 +262,7 @@ void IRDecode()
  
 #pragma region ButtonCommands
 
+// Button commands for the IR remote
 
     int but1 = 0x45;
     int but2 = 0x46;
@@ -274,7 +286,9 @@ void IRDecode()
 #pragma endregion
 
 
-if (!hasIRRecv) { return; }
+if (!hasIRRecv) { return; } // If we have not received a signal, break out of the function and do not decode the signal.
+
+// Goes through all the commands and if the command is received, set the relative movement command to true and the others to false.
 
 int IrData = IrReceiver.decodedIRData.command;
 
@@ -389,6 +403,8 @@ void BluetoothLoop()
 {
     Dabble.processInput();
 
+    // Checks the input received via the bluetooth libary and sets the relative movement command to true and the others to false.
+
     if (GamePad.isCrossPressed())
     {
         Serial.println("CROSS");
@@ -450,6 +466,8 @@ void BluetoothLoop()
 
 void MotorMaster()
 {
+    // Receives and processes the boolean values of the relevent movement commands and runs the MotorControl function with the data passed through.
+   
     if (isFoward)
     {
         Serial.println("FOWARAD ACTIONED");
@@ -475,6 +493,8 @@ void MotorMaster()
 
 void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
 {
+    // The method responsable for setting the motor pins to the correct values to move the robot in the desired direction.
+    // It takes in 4 boolean values and sets the motor pins to the corresponding values.
 	digitalWrite(motor1, motor1Int);
 	digitalWrite(motor2, motor2Int);
 	digitalWrite(motor3, motor3Int);

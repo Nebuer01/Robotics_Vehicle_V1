@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Robotics_Vehicle_V1", "Robotics_Vehicle_V1\Robotics_Vehicle_V1.vcxproj", "{052891A8-8983-4340-A134-D2A471AF6850}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleReceiver", "..\..\libraries\IRremote-4.3.1\examples\SimpleReceiver\SimpleReceiver.vcxproj", "{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -27,18 +25,6 @@ Global
 		{052891A8-8983-4340-A134-D2A471AF6850}.Release|ARM64.ActiveCfg = Release|ARM64
 		{052891A8-8983-4340-A134-D2A471AF6850}.Release|ARM64.Build.0 = Release|ARM64
 		{052891A8-8983-4340-A134-D2A471AF6850}.Release|ARM64.Deploy.0 = Release|ARM64
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Debug|ARM.ActiveCfg = Debug|ARM
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Debug|ARM.Build.0 = Debug|ARM
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Debug|ARM.Deploy.0 = Debug|ARM
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Debug|ARM64.Build.0 = Debug|ARM64
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Debug|ARM64.Deploy.0 = Debug|ARM64
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Release|ARM.ActiveCfg = Release|ARM
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Release|ARM.Build.0 = Release|ARM
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Release|ARM.Deploy.0 = Release|ARM
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Release|ARM64.ActiveCfg = Release|ARM64
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Release|ARM64.Build.0 = Release|ARM64
-		{A0B42ADF-C8F0-4596-BF68-C27F2118D34D}.Release|ARM64.Deploy.0 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
