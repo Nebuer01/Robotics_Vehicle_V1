@@ -3,7 +3,7 @@
 
 This program is for a simple robot vehicle that can be controlled via bluetooth or IR remote with an option for a full auto mode. 
 
-It utilizes and Arduino Uno R3 for control. The robot has 2 motors powered by a motor controlle with four pins, 1Forward 1Reverse 2Foward 3Reverse, as well as a 5V for control board power and a higher voltage pin up to 12v for motor power.
+It utilizes and Arduino Uno R3 for control. The robot has 2 motors powered by a motor controller with four pins, 1Forward 1Reverse 2Foward 3Reverse, as well as a 5V for control board power and a higher voltage pin up to 12v for motor power.
 
 The robot also features an ultrasonic sensor on a servo which is used to ensure the robot will avoid objects when using the auto mode. This has however not been fully implemented yet as the IR and especially Bluetooth control modes supersede the auto mode.
 
