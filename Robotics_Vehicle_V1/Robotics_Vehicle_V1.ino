@@ -20,7 +20,7 @@ bool isBluetooth = true; //Toggle for bluetooth mode vs IR mode
 
 #pragma region PinDefine
 
-// Variables for the board digital pins so I can change the pin number here and it changes throughout the project
+// Variables for the board digital pins so the pin number can be changed here and it changes throughout the project
 int servoPin = 6;
 int motor1 = 9;
 int redLED = 7;
@@ -44,7 +44,7 @@ Ultrasonic ultrasonic(ultraTrig, ultraEcho, 20000UL);
 
 #pragma region RuntimeVariables
 
-//Variables changed during runtime
+//gloabl variables changed during runtime
 
 int servoAngle = 90;
 
@@ -64,25 +64,24 @@ bool isAuto = false;
 
 #pragma endregion
 
-
-
+// setup function called by the arduino at the start of the program
 void setup()
 {
     Serial.begin(11520);
     Serial.println("Begun Setup");
 
-    TestLEDSetup(); // Test LED Setup
-    BluetoothInitilise(); // Bluetooth Setup
-    //IRInitilise(); // IR Setup
-    ServoInitilise();// Servo Setup
-    MotorInitilise(); // Motor Setup
+    LEDSetup();             // LED setup
+    BluetoothInitilise();   // Bluetooth Setup
+    //IRInitilise();        // IR Setup
+    ServoInitilise();       // Servo Setup
+    MotorInitilise();       // Motor Setup
 
     Serial.println("Setup Complete");
     Serial.println("--------------");
     digitalWrite(blueLED, LOW);
 }
 
-void TestLEDSetup()
+void LEDSetup()
 {
     pinMode(redLED, OUTPUT);
     pinMode(blueLED, OUTPUT);
@@ -126,11 +125,10 @@ void MotorInitilise()
     Serial.println("Motor Setup Complete");
 }
 
-
-
+// Main loop function called by the arduino after the setup function
 void loop()
 {
-    if (isAutoFull || isAuto) //if I have enabled auto mode or auto has been triggered by bluetooth, run the auto control loop rather than the manual control loop
+    if (isAutoFull || isAuto) //if auto mode is enabled, or auto has been triggered by bluetooth, run the auto control loop rather than the manual control loop
 	{
 		AutoControlLoop();
         ServoMove();
@@ -152,49 +150,30 @@ void loop()
 
 void AutoControlLoop()
 {
+   
     // A sequence of motor pin changes and delays to create a rough square pattern
     int delay1 = 1000;
     int delay2 = 800;
 
-    isFoward = true;
-    MotorMaster();
-    delay(delay1);
-    isFoward = false;
-    isLeft = true;
-    MotorMaster();
-    delay(delay2);
-    isFoward = true;
-    isLeft = false;
-    MotorMaster();
-    delay(delay1);
-    isFoward = false;
-    isLeft = true;
-    MotorMaster();
-    delay(delay2);
-    isFoward = true;
-    isLeft = false;
-    MotorMaster();
-    delay(delay1);
-    isFoward = false;
-    isLeft = true;
-    MotorMaster();
-    delay(delay2);
-    isFoward = true;
-    isLeft = false;
-    MotorMaster();
-    delay(delay1);
-    isFoward = false;
-    isLeft = true;
-    MotorMaster();
-    delay(delay2);
+    // The robot will move forward for 1000ms, then turn left for 800ms, this will repeat 4 times to create a square pattern
+    for (int i = 0; i < 4; i++) {
+        isFoward = true;
+        isLeft = false;
+        MotorMaster();
+        delay(delay1);
 
-	isAuto = false;
-}
+        isFoward = false;
+        isLeft = true;
+        MotorMaster();
+        delay(delay2);
+    }
 
+    isAuto = false;
+
+    }
 
 void ServoMove()
 {
-
     delay(20);
     myServo.write(nextAngle);
     Serial.println(nextAngle);
@@ -223,7 +202,111 @@ void ServoMove()
     }
 }
 
-// IR
+void BluetoothLoop()
+{
+    Dabble.processInput();
+
+    // Checks the input received via the bluetooth libary and sets the relative movement command to true and the others to false.
+
+    // this could be a case statement but the if statements are more readable and easier to debug.
+    if (GamePad.isCrossPressed())
+    {
+        Serial.println("CROSS");
+        isFoward = false;
+        isLeft = false;
+        isRight = false;
+        isBackward = false;
+    }
+    else if (GamePad.isUpPressed())
+	{
+		Serial.println("UP");
+		isFoward = true;
+		isLeft = false;
+		isRight = false;
+		isBackward = false;
+	}
+    else if (GamePad.isLeftPressed())
+    {
+        Serial.println("LEFT");
+        isFoward = false;
+        isLeft = true;
+        isRight = false;
+        isBackward = false;
+    }
+    else if (GamePad.isRightPressed())
+	{
+		Serial.println("RIGHT");
+		isFoward = false;
+		isLeft = false;
+		isRight = true;
+		isBackward = false;
+	}
+	else if (GamePad.isDownPressed())
+	{
+		Serial.println("DOWN");
+		isFoward = false;
+		isLeft = false;
+		isRight = false;
+		isBackward = true;
+	}
+    else if (GamePad.isStartPressed())
+    {
+        Serial.println("START");
+        isFoward = false;
+        isLeft = false;
+        isRight = false;
+        isBackward = false;
+        isAuto = !isAuto;
+    }
+	else
+	{
+		isFoward = false;
+		isLeft = false;
+		isRight = false;
+		isBackward = false;
+	}
+}
+
+void MotorMaster()
+{
+    // Receives and processes the boolean values of the relevent movement commands and runs the MotorControl function with the data passed through.
+   
+    if (isFoward)
+    {
+        //Serial.println("FOWARAD ACTIONED");
+        MotorControl(1, 0, 1, 0);
+    }
+    else if (isBackward)
+    {
+        MotorControl(0, 1, 0, 1);
+    }
+    else if (isLeft)
+    {
+        MotorControl(0, 0, 1, 0);
+    }
+    else if (isRight)
+    {
+        MotorControl(1, 0, 0, 0);
+    }
+    else
+    {
+        MotorControl(0, 0, 0, 0);
+    }
+}
+
+void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
+{
+    // The method responsable for setting the motor pins to the correct values to move the robot in the desired direction.
+    // It takes in 4 boolean values and sets the motor pins to the corresponding values.
+	digitalWrite(motor1, motor1Int);
+	digitalWrite(motor2, motor2Int);
+	digitalWrite(motor3, motor3Int);
+	digitalWrite(motor4, motor4Int);
+}
+
+
+// -----IR------ //
+
 /*
 void IRReceive()
 {
@@ -398,106 +481,3 @@ int IrData = IrReceiver.decodedIRData.command;
     }
 }
 */
-
-void BluetoothLoop()
-{
-    Dabble.processInput();
-
-    // Checks the input received via the bluetooth libary and sets the relative movement command to true and the others to false.
-
-    if (GamePad.isCrossPressed())
-    {
-        Serial.println("CROSS");
-        isFoward = false;
-        isLeft = false;
-        isRight = false;
-        isBackward = false;
-    }
-    else if (GamePad.isUpPressed())
-	{
-		Serial.println("UP");
-		isFoward = true;
-		isLeft = false;
-		isRight = false;
-		isBackward = false;
-	}
-    else if (GamePad.isLeftPressed())
-    {
-        Serial.println("LEFT");
-        isFoward = false;
-        isLeft = true;
-        isRight = false;
-        isBackward = false;
-    }
-    else if (GamePad.isRightPressed())
-	{
-		Serial.println("RIGHT");
-		isFoward = false;
-		isLeft = false;
-		isRight = true;
-		isBackward = false;
-	}
-	else if (GamePad.isDownPressed())
-	{
-		Serial.println("DOWN");
-		isFoward = false;
-		isLeft = false;
-		isRight = false;
-		isBackward = true;
-	}
-    else if (GamePad.isStartPressed())
-    {
-        Serial.println("START");
-        isFoward = false;
-        isLeft = false;
-        isRight = false;
-        isBackward = false;
-        isAuto = !isAuto;
-    }
-	else
-	{
-		isFoward = false;
-		isLeft = false;
-		isRight = false;
-		isBackward = false;
-	}
-}
-
-
-void MotorMaster()
-{
-    // Receives and processes the boolean values of the relevent movement commands and runs the MotorControl function with the data passed through.
-   
-    if (isFoward)
-    {
-        Serial.println("FOWARAD ACTIONED");
-        MotorControl(1, 0, 1, 0);
-    }
-    else if (isBackward)
-    {
-        MotorControl(0, 1, 0, 1);
-    }
-    else if (isLeft)
-    {
-        MotorControl(0, 0, 1, 0);
-    }
-    else if (isRight)
-    {
-        MotorControl(1, 0, 0, 0);
-    }
-    else
-    {
-        MotorControl(0, 0, 0, 0);
-    }
-}
-
-void MotorControl(int motor1Int, int motor2Int, int motor3Int, int motor4Int)
-{
-    // The method responsable for setting the motor pins to the correct values to move the robot in the desired direction.
-    // It takes in 4 boolean values and sets the motor pins to the corresponding values.
-	digitalWrite(motor1, motor1Int);
-	digitalWrite(motor2, motor2Int);
-	digitalWrite(motor3, motor3Int);
-	digitalWrite(motor4, motor4Int);
-}
-
