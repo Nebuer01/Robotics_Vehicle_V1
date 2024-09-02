@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Robotics_Vehicle_V1", "Robotics_Vehicle_V1\Robotics_Vehicle_V1.vcxproj", "{052891A8-8983-4340-A134-D2A471AF6850}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Robotics_Vehicle_V1.2", "..\..\Robotics_Vehicle_V1.2\Robotics_Vehicle_V1.2\Robotics_Vehicle_V1.2.vcxproj", "{13BFB71D-E107-4F91-B6A2-44CC9C457A96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -25,6 +27,18 @@ Global
 		{052891A8-8983-4340-A134-D2A471AF6850}.Release|ARM64.ActiveCfg = Release|ARM64
 		{052891A8-8983-4340-A134-D2A471AF6850}.Release|ARM64.Build.0 = Release|ARM64
 		{052891A8-8983-4340-A134-D2A471AF6850}.Release|ARM64.Deploy.0 = Release|ARM64
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Debug|ARM.ActiveCfg = Debug|ARM
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Debug|ARM.Build.0 = Debug|ARM
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Debug|ARM.Deploy.0 = Debug|ARM
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Debug|ARM64.Build.0 = Debug|ARM64
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Release|ARM.ActiveCfg = Release|ARM
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Release|ARM.Build.0 = Release|ARM
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Release|ARM.Deploy.0 = Release|ARM
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Release|ARM64.ActiveCfg = Release|ARM64
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Release|ARM64.Build.0 = Release|ARM64
+		{13BFB71D-E107-4F91-B6A2-44CC9C457A96}.Release|ARM64.Deploy.0 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
