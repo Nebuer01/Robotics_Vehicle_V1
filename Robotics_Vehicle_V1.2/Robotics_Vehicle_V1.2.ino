@@ -3,6 +3,7 @@
     Created:	02/09/2024 2:40:32 Pm
     Author:     MIMAS\reube
     ReadMe:     ./README.md
+    This file is a v1.2 version, modified after the project was submitted for review. V1 has not been modified after submission.
     Description: This code is for a simple robot vehicle that can be controlled via bluetooth or IR remote with an option for a full auto mode
     Project wide development notes:
         The pragma regions are simply for organisation and do not affect the code in any way, it makes it easier to look at and debug, splitting the code up into differnt sections
