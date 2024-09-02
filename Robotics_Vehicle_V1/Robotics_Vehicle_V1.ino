@@ -21,6 +21,7 @@ bool isBluetooth = true; //Toggle for bluetooth mode vs IR mode
 #pragma region PinDefine
 
 // Variables for the board digital pins so the pin number can be changed here and it changes throughout the project
+// These could be const variables since these variables are not being modified and the project is relatively small, it is not needed.
 int servoPin = 6;
 int motor1 = 9;
 int redLED = 7;
@@ -44,7 +45,7 @@ Ultrasonic ultrasonic(ultraTrig, ultraEcho, 20000UL);
 
 #pragma region RuntimeVariables
 
-//gloabl variables changed during runtime
+// Gloabl variables changed during runtime
 
 int servoAngle = 90;
 
@@ -64,7 +65,7 @@ bool isAuto = false;
 
 #pragma endregion
 
-// setup function called by the arduino at the start of the program
+// Setup function called by the arduino at the start of the program
 void setup()
 {
     Serial.begin(11520);
@@ -128,7 +129,7 @@ void MotorInitilise()
 // Main loop function called by the arduino after the setup function
 void loop()
 {
-    if (isAutoFull || isAuto) //if auto mode is enabled, or auto has been triggered by bluetooth, run the auto control loop rather than the manual control loop
+    if (isAutoFull || isAuto) // if auto mode is enabled, or auto has been triggered by bluetooth, run the auto control loop rather than the manual control loop
 	{
 		AutoControlLoop();
         ServoMove();
@@ -178,7 +179,7 @@ void ServoMove()
     myServo.write(nextAngle);
     Serial.println(nextAngle);
 
-    if (!isNextAngleNeg) //if the next angle is not negative, increase the angle by 3 degrees but if it is negative, decrease the angle by 3 degrees
+    if (!isNextAngleNeg) // if the next angle is not negative, increase the angle by 3 degrees but if it is negative, decrease the angle by 3 degrees
     {
         if (nextAngle >= 150) // if the servo has reached the maximum desired radius, switch the direction to start it moving in the opposite direction.
         {
@@ -208,7 +209,7 @@ void BluetoothLoop()
 
     // Checks the input received via the bluetooth libary and sets the relative movement command to true and the others to false.
 
-    // this could be a case statement but the if statements are more readable and easier to debug.
+    // This could be a case statement but the if statements are more readable and easier to debug.
     if (GamePad.isCrossPressed())
     {
         Serial.println("CROSS");
@@ -273,7 +274,6 @@ void MotorMaster()
    
     if (isFoward)
     {
-        //Serial.println("FOWARAD ACTIONED");
         MotorControl(1, 0, 1, 0);
     }
     else if (isBackward)
